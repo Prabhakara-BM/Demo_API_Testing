@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 import Files.Payload;
+import Files.ReUsableMethods;
 
 public class Basics {
 
@@ -25,6 +26,7 @@ public class Basics {
 		System.out.println("The Place Id is :"+placeID);
 		
 		//Update Place
+		
 		String newAddress="70 winter walk, Africa";
 		given().log().all().queryParam("key", "qaclick123").header("Content-Type","application/json")
 		.body("{\r\n"
@@ -36,11 +38,13 @@ public class Basics {
 		.then().log().all().assertThat().statusCode(200).body("msg", equalTo("Address successfully updated"));
 		
 		//Get Place
+		
 		String getPlaceRepsonse=given().log().all().queryParam("key", "qaclick123").queryParam("place_id",placeID)
 		.header("Content-Type","application/json")
 		.when().get("/maps/api/place/get/json").then().log().all()
 		.assertThat().statusCode(200).extract().response().asString();
-		JsonPath js2=new JsonPath(getPlaceRepsonse);
+		//JsonPath js2=new JsonPath(getPlaceRepsonse);
+		JsonPath js2=ReUsableMethods.rowToJson(getPlaceRepsonse);
 		String ActualAddres=js2.getString("address");
 		System.out.println("The actual adress is :"+ActualAddres);
 		
